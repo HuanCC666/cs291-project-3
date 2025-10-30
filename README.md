@@ -77,3 +77,19 @@ rails generate model ExpertAssignment \
 # Run the migration
 rails db:migrate
 ```
+
+### Generate Controllers
+
+```bash
+rails generate controller Health index
+
+rails generate controller Auth register login logout refresh me
+
+rails generate controller Conversations index show create
+
+rails generate controller Messages index create read
+
+rails generate controller Expert queue claim unclaim profile update_profile assignments_history
+
+rails generate controller Api::Updates conversations messages expert_queue
+```
