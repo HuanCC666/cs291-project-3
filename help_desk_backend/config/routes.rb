@@ -1,37 +1,43 @@
 Rails.application.routes.draw do
-  namespace :api do
-    get "updates/conversations"
-    get "updates/messages"
-    get "updates/expert_queue"
+  # Health
+  get "/health", to: "health#index"
+
+  # Auth (session cookie + JWT token)
+  scope :auth do
+    post "register", to: "auth#register"
+    post "login",    to: "auth#login"
+    post "logout",   to: "auth#logout"
+    post "refresh",  to: "auth#refresh"
+    get  "me",       to: "auth#me"
   end
-  get "expert/queue"
-  get "expert/claim"
-  get "expert/unclaim"
-  get "expert/profile"
-  get "expert/update_profile"
-  get "expert/assignments_history"
-  get "messages/index"
-  get "messages/create"
-  get "messages/read"
-  get "conversations/index"
-  get "conversations/show"
-  get "conversations/create"
-  get "auth/register"
-  get "auth/login"
-  get "auth/logout"
-  get "auth/refresh"
-  get "auth/me"
-  get "health/index"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  # Conversations (JWT)
+  resources :conversations, only: [:index, :show, :create] do
+    # Messages index under conversation
+    resources :messages, only: [:index], controller: "messages"
+  end
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  # Messages create/read (JWT)
+  resources :messages, only: [:create] do
+    member { put :read }  # /messages/:id/read
+  end
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Expert (JWT)
+  scope :expert do
+    get  "queue", to: "expert#queue"
+    post "conversations/:conversation_id/claim",   to: "expert#claim"
+    post "conversations/:conversation_id/unclaim", to: "expert#unclaim"
+
+    get  "profile", to: "expert#profile"
+    put  "profile", to: "expert#update_profile"
+
+    get  "assignments/history", to: "expert#assignments_history"
+  end
+
+  # Updates / polling (JWT) —— namespace /api
+  namespace :api do
+    get "conversations/updates", to: "updates#conversations"
+    get "messages/updates",      to: "updates#messages"
+    get "expert-queue/updates",  to: "updates#expert_queue"
+  end
 end
