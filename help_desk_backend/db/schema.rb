@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_29_221824) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_31_012414) do
   create_table "conversations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "assigned_expert_id"
     t.datetime "created_at", null: false
@@ -59,6 +59,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_29_221824) do
     t.index ["conversation_id"], name: "index_messages_on_conversation_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
     t.check_constraint "`sender_role` in (_utf8mb4'initiator',_utf8mb4'expert')", name: "messages_sender_role_check"
+  end
+
+  create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "data"
+    t.string "session_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

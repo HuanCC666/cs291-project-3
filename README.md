@@ -11,13 +11,25 @@ docker-compose exec web bash
 gem install rails
 ```
 
+## Start Backend
+
+```bash
+# Navigate to the app directory
+cd help_desk_backend
+
+# Install dependencies
+bundle install
+   
+# Start the Rails server
+rails server -b 0.0.0.0 -p 3000
+```
 
 ## Rails Project Configure
 
 ### Create a New Rails Application
 
 ```bash
-rails new help_desk_backend --database=mysql --skip-system-test
+rails new help_desk_backend --api --skip-kamal --skip-thruster  --database=mysql
 
 cd help_desk_backend
 # Install dependencies
@@ -76,6 +88,7 @@ rails generate model ExpertAssignment \
 
 # Run the migration
 rails db:migrate
+# rails db:drop db:create db:migrate
 ```
 
 ### Generate Controllers

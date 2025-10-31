@@ -4,12 +4,12 @@ one:
   conversation: one
   expert: one
   status: MyString
-  assigned_at: 2025-10-29 22:18:24
-  resolved_at: 2025-10-29 22:18:24
+  assigned_at: 2025-10-31 01:12:09
+  resolved_at: 2025-10-31 01:12:09
 
 two:
   conversation: two
   expert: two
   status: MyString
-  assigned_at: 2025-10-29 22:18:24
-  resolved_at: 2025-10-29 22:18:24
+  assigned_at: 2025-10-31 01:12:09
+  resolved_at: 2025-10-31 01:12:09
