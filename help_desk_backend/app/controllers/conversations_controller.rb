@@ -1,5 +1,5 @@
 class ConversationsController < ApplicationController
-  before_action :authenticate_jwt!
+  before_action :require_session_or_jwt!
   
 
   # GET /conversations

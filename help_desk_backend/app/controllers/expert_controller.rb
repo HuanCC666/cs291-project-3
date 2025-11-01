@@ -1,5 +1,5 @@
 class ExpertController < ApplicationController
-  before_action :authenticate_jwt!
+  before_action :require_session_or_jwt!
 
   # GET /expert/queue
   def queue

@@ -72,4 +72,23 @@ class ApplicationController < ActionController::Base
       render json: { error: 'No session found' }, status: :unauthorized
     end
   end
+
+  # Used for controllers that should accept both cookie and token
+  def require_session_or_jwt!
+    # Try session first
+    @current_user = current_user_from_session
+
+    # Fallback to JWT if no session found
+    unless @current_user
+      token_user = current_user
+      @current_user = token_user if token_user.present?
+    end
+
+    if @current_user.nil?
+      Rails.logger.warn "require_session_or_jwt!: no valid session or JWT found → Unauthorized"
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+    else
+      Rails.logger.info "require_session_or_jwt!: user=#{@current_user.id}, username=#{@current_user.username}"
+    end
+  end
 end
