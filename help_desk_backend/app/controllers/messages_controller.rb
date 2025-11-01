@@ -12,9 +12,9 @@ class MessagesController < ApplicationController
     render json: messages
   end
 
-  # POST /conversations/:conversation_id/messages  或 /messages
+  # POST /conversations/:conversation_id/messages  
   def create
-    # ✅ 兼容前端直接 POST /messages 的情况
+
     conversation_id = params[:conversation_id] || params[:conversationId]
     conversation = Conversation.find_by(id: conversation_id)
 
@@ -22,7 +22,6 @@ class MessagesController < ApplicationController
       return render json: { error: 'Conversation not found' }, status: :not_found
     end
 
-    # ✅ 权限检查
     unless conversation.initiator_id == current_user.id || conversation.assigned_expert_id == current_user.id
       return render json: { error: 'Not authorized to send messages' }, status: :forbidden
     end
