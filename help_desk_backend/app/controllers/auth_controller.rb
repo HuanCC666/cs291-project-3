@@ -1,6 +1,6 @@
 class AuthController < ApplicationController
-  # register/login don't need JWT; refresh/me/logout need session
-  before_action :require_session!, only: [:refresh, :me, :logout]
+  # register/login don't need JWT; refresh/me/logout need session or JWT
+  before_action :require_session_or_jwt!, only: [:refresh, :me, :logout]
 
   # POST /auth/register
   def register
@@ -50,7 +50,7 @@ class AuthController < ApplicationController
 
   # POST /auth/refresh
   def refresh
-    user = current_user_from_session
+    user = @current_user
     token = JwtService.encode(user)
     render json: {
       user: {
@@ -64,11 +64,29 @@ class AuthController < ApplicationController
 
   # GET /auth/me
   def me
-    user = current_user_from_session
+    user = @current_user
     render json: {
       id: user.id, username: user.username,
       created_at: user.created_at.iso8601,
       last_active_at: user.last_active_at&.iso8601
     }
+  end
+
+  private
+
+  # Allow either session-based or JWT-based authentication
+  def require_session_or_jwt!
+    # Try session first
+    @current_user = current_user_from_session
+
+    # Fallback to JWT if no session found
+    unless @current_user
+      token_user = current_user
+      @current_user = token_user if token_user.present?
+    end
+
+    unless @current_user
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+    end
   end
 end
