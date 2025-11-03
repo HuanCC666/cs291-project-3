@@ -1,15 +1,20 @@
 class Api::UpdatesController < ApplicationController
   before_action :authenticate_jwt!
 
-  # GET /api/updates/conversations
+  # GET /api/conversations/updates
   def conversations
+    render json: []
   end
 
-  # GET /api/updates/messages
+  # GET /api/messages/updates
   def messages
+
+    render json: []
   end
 
-  # GET /api/updates/expert_queue
+  # GET /api/expert-queue/updates
   def expert_queue
+
+    render json: []
   end
 end
