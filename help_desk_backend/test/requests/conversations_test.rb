@@ -47,6 +47,30 @@ class ConversationsTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "GET /conversations/:id allows expert to view waiting conversation" do
+    expert_user = User.create!(username: "expertviewer", password: "password123")
+    ExpertProfile.create!(user: expert_user)
+    expert_token = JwtService.encode(expert_user)
+    
+    other_user = User.create!(username: "otheruser2", password: "password123")
+    conversation = Conversation.create!(title: "Waiting Conversation", initiator: other_user, status: "waiting")
+    
+    get "/conversations/#{conversation.id}", headers: { "Authorization" => "Bearer #{expert_token}" }
+    assert_response :ok
+    response_data = JSON.parse(response.body)
+    assert_equal conversation.id.to_s, response_data["id"]
+    assert_equal "waiting", response_data["status"]
+  end
+
+  test "GET /conversations/:id does not allow non-expert to view other's waiting conversation" do
+    other_user = User.create!(username: "otheruser3", password: "password123")
+    conversation = Conversation.create!(title: "Other Conversation", initiator: other_user, status: "waiting")
+    
+    # @user is not an expert and not the initiator
+    get "/conversations/#{conversation.id}", headers: { "Authorization" => "Bearer #{@token}" }
+    assert_response :not_found
+  end
+
   test "POST /conversations requires title" do
     post "/conversations",
          params: {},
