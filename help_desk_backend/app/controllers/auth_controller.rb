@@ -9,12 +9,7 @@ class AuthController < ApplicationController
       session[:user_id] = user.id  # Create session (set cookie)
       token = JwtService.encode(user)
       render json: {
-        user: {
-          id: user.id,
-          username: user.username,
-          created_at: user.created_at.iso8601,
-          last_active_at: user.last_active_at&.iso8601
-        },
+        user: user.as_json,
         token: token
       }, status: :created
     else
@@ -30,11 +25,7 @@ class AuthController < ApplicationController
       user.update_column(:last_active_at, Time.current)
       token = JwtService.encode(user)
       render json: {
-        user: {
-          id: user.id, username: user.username,
-          created_at: user.created_at.iso8601,
-          last_active_at: user.last_active_at&.iso8601
-        },
+        user: user.as_json,
         token: token
       }
     else
@@ -53,11 +44,7 @@ class AuthController < ApplicationController
     user = @current_user
     token = JwtService.encode(user)
     render json: {
-      user: {
-        id: user.id, username: user.username,
-        created_at: user.created_at.iso8601,
-        last_active_at: user.last_active_at&.iso8601
-      },
+      user: user.as_json,
       token: token
     }
   end
@@ -65,11 +52,7 @@ class AuthController < ApplicationController
   # GET /auth/me
   def me
     user = @current_user
-    render json: {
-      id: user.id, username: user.username,
-      created_at: user.created_at.iso8601,
-      last_active_at: user.last_active_at&.iso8601
-    }
+    render json: user
   end
 
   private
