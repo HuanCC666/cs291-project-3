@@ -12,10 +12,9 @@ class Api::UpdatesController < ApplicationController
       return render json: { error: 'userId parameter is required' }, status: :bad_request
     end
 
-    # Get conversations where the user is initiator or assigned expert
-    query = Conversation.where(
-      "initiator_id = ? OR assigned_expert_id = ?", user_id, user_id
-    )
+    # Get conversations where the user is initiator (questioner)
+    # Conversations where the user is assigned as an expert are handled by /api/expert-queue/updates
+    query = Conversation.where(initiator_id: user_id)
 
     # Filter by timestamp if provided
     if since.present?
@@ -43,6 +42,8 @@ class Api::UpdatesController < ApplicationController
     end
 
     # Get conversations where the user is involved
+    # This includes both conversations as initiator and as assigned expert
+    # because users need to receive message updates for conversations they're actively participating in
     conversation_ids = Conversation.where(
       "initiator_id = ? OR assigned_expert_id = ?", user_id, user_id
     ).pluck(:id)

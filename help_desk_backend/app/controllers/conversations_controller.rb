@@ -4,9 +4,9 @@ class ConversationsController < ApplicationController
 
   # GET /conversations
   def index
-    conversations = Conversation.where(
-      "initiator_id = ? OR assigned_expert_id = ?", current_user.id, current_user.id
-    )
+    # Only return conversations where the current user is the initiator (questioner)
+    # Conversations where the user is assigned as an expert should be accessed via /expert/queue
+    conversations = Conversation.where(initiator_id: current_user.id)
     render json: conversations
   end
 
