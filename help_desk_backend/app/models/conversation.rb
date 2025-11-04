@@ -3,6 +3,8 @@ class Conversation < ApplicationRecord
   belongs_to :assigned_expert, class_name: "User", optional: true
   has_many :messages, dependent: :destroy
 
+  validates :title, presence: true
+
   def as_json(options = {})
     {
       id: id.to_s,

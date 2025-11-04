@@ -1,6 +1,7 @@
 class AuthController < ApplicationController
-  # register/login don't need JWT; refresh/me/logout need session or JWT
-  before_action :require_session_or_jwt!, only: [:refresh, :me, :logout]
+  # register/login don't need JWT; refresh needs session only; me needs session or JWT
+  before_action :require_session!, only: [:refresh]
+  before_action :require_session_or_jwt!, only: [:me]
 
   # POST /auth/register
   def register

@@ -3,13 +3,13 @@
 one:
   conversation: one
   sender: one
-  sender_role: MyString
+  sender_role: initiator
   content: MyText
   is_read: false
 
 two:
   conversation: two
   sender: two
-  sender_role: MyString
+  sender_role: expert
   content: MyText
   is_read: false

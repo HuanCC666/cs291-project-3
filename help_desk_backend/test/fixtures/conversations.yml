@@ -1,15 +1,14 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  title: MyString
-  status: MyString
+  title: Test Conversation One
+  status: active
   initiator: one
   assigned_expert: one
   last_message_at: 2025-10-31 01:11:55
 
 two:
-  title: MyString
-  status: MyString
+  title: Test Conversation Two
+  status: waiting
   initiator: two
-  assigned_expert: two
   last_message_at: 2025-10-31 01:11:55

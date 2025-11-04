@@ -48,15 +48,18 @@ class ApplicationController < ActionController::Base
       if user.nil?
         Rails.logger.warn "authenticate_jwt!: current_user is nil → Unauthorized"
         render json: { error: 'Unauthorized' }, status: :unauthorized
+        return
       else
         Rails.logger.info "authenticate_jwt!: user=#{user.id}, username=#{user.username}"
       end
     rescue JWT::DecodeError => e
       Rails.logger.error "JWT decode error in authenticate_jwt!: #{e.message}"
       render json: { error: 'Invalid or expired token' }, status: :unauthorized
+      return
     rescue StandardError => e
       Rails.logger.error "Auth error in authenticate_jwt!: #{e.class} - #{e.message}"
       render json: { error: 'Authentication failed' }, status: :unauthorized
+      return
     end
   end
 
@@ -67,26 +70,28 @@ class ApplicationController < ActionController::Base
   end
 
   def require_session!
-    unless current_user_from_session
+    @current_user = current_user_from_session
+    unless @current_user
       Rails.logger.warn "require_session!: No session found"
       render json: { error: 'No session found' }, status: :unauthorized
+      return
     end
   end
 
   # Used for controllers that should accept both cookie and token
   def require_session_or_jwt!
-    # Try session first
-    @current_user = current_user_from_session
-
-    # Fallback to JWT if no session found
-    unless @current_user
-      token_user = current_user
-      @current_user = token_user if token_user.present?
+    # Try JWT first (if Authorization header is present)
+    if bearer_token.present?
+      @current_user = current_user  # This will decode JWT and find user
+    else
+      # Fallback to session if no JWT token provided
+      @current_user = current_user_from_session
     end
 
     if @current_user.nil?
       Rails.logger.warn "require_session_or_jwt!: no valid session or JWT found → Unauthorized"
       render json: { error: 'Unauthorized' }, status: :unauthorized
+      return
     else
       Rails.logger.info "require_session_or_jwt!: user=#{@current_user.id}, username=#{@current_user.username}"
     end

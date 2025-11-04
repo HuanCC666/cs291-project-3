@@ -3,13 +3,13 @@
 one:
   conversation: one
   expert: one
-  status: MyString
+  status: active
   assigned_at: 2025-10-31 01:12:09
   resolved_at: 2025-10-31 01:12:09
 
 two:
   conversation: two
   expert: two
-  status: MyString
+  status: resolved
   assigned_at: 2025-10-31 01:12:09
   resolved_at: 2025-10-31 01:12:09

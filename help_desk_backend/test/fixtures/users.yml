@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  username: MyString
+  username: user_one
   password_digest: MyString
   last_active_at: 2025-10-31 01:11:49
 
 two:
-  username: MyString
+  username: user_two
   password_digest: MyString
   last_active_at: 2025-10-31 01:11:49
