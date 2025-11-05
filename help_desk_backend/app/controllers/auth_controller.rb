@@ -7,6 +7,9 @@ class AuthController < ApplicationController
   def register
     user = User.new(username: params[:username], password: params[:password])
     if user.save
+      # Create expert profile separately
+      ExpertProfile.create!(user: user, bio: "", knowledge_base_links: [])
+      
       session[:user_id] = user.id  # Create session (set cookie)
       token = JwtService.encode(user)
       render json: {
